@@ -1,0 +1,8 @@
+.addForm {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+}
+.addForm > input {
+  padding: 10px 20px;
+  outline-color: #1E3694;
+}

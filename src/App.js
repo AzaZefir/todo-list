@@ -1,40 +1,52 @@
 import './App.css';
 import TodoList from './components/todoList/TodoList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Header } from './components/header/Header';
+import { AddForm } from './components/addForm/AddForm';
 
 function App() {
-  let [plus, setPlus] = useState(0);
-  let [inputText, setInputText] = useState('hello');
+  const [inputText, setInputText] = useState('');
+  const [listsItem, setListsItem] = useState(JSON.parse(localStorage.getItem('todoItems')) || []);
 
-  const listsItem = [
-    { id: 1, text: 'выучить базу js' },
-    { id: 2, text: 'выучить базу html' },
-    { id: 3, text: 'выучить базу css' },
-    { id: 4, text: 'выучить базу vue' },
-    { id: 5, text: 'выучить базу vue' },
-  ];
+  useEffect(()=>{
+    localStorage.setItem('todoItems', JSON.stringify(listsItem))
+  })
 
-  // const onAdd = () => {
-  //   setPlus(plus + 1)
-  // }
-  const onMinus = () => {
-    setPlus(plus - 1);
+  let result = listsItem.reduce((acc, curStatus)=>{
+    return acc + curStatus.status
+  }, 0)
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    let newTodo = {
+      id: Date.now(),
+      status: false,
+      text: inputText,
+    };
+    setListsItem([...listsItem, newTodo]);
+    setInputText('');
   };
-  const onInputChange = (event) => {
-    setInputText(event.target.value);
-    console.log(event);
-  };
+
   return (
-    <div>
-      <h1>{inputText}</h1>
-      <input type="text" value={inputText} onChange={onInputChange} />
-      <h1>{plus}</h1>
-      <button onClick={() => setPlus(plus + 1)}> + increment</button>
-      <button onClick={onMinus}> - decrement</button>
-      {listsItem.map((element) => (
-        <TodoList key={element.id} element={element} />
-      ))}
-      {/* <TodoList id={1}/> */}
+    <div className='app-wrapper'>
+      <Header result={result} listsItem={listsItem}/>
+
+      <AddForm setInputText={setInputText} inputText={inputText} onSubmitForm={onSubmitForm}/>
+      
+      {listsItem.length ? (
+        listsItem.map((element, index) => (
+          <TodoList
+            inputText={inputText}
+            listsItem={listsItem}
+            setListsItem={setListsItem}
+            number={index}
+            key={element.id}
+            element={element}
+          />
+        ))
+      ) : (
+        <h1>Нет задач!</h1>
+      )}
     </div>
   );
 }

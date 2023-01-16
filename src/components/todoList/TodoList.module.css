@@ -1,0 +1,11 @@
+.todoBtn {
+  width: 36%;
+  display: flex;
+  justify-content: space-between;
+}
+.formEdit {
+  display: flex;
+}
+.formEdit input {
+  outline-color: #1e3694;
+}
